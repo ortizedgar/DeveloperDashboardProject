@@ -17,25 +17,28 @@ module Api
     before_action :set_up_client
 
     HEADLINES_API = 'top-headlines'
-    API_URL       = ENV.fetch('NEWS_API_URL', 'default_url_here')
-    API_KEY       = ENV.fetch('NEWS_API_KEY', 'default_key_here')
+    API_URL       = ENV.fetch 'NEWS_API_URL', 'default_url_here'
+    API_KEY       = ENV.fetch 'NEWS_API_KEY', 'default_key_here'
+
+    rescue_from Faraday::Error, with: :handle_faraday_error
+    rescue_from JSON::ParserError, with: :handle_json_error
 
     # Fetch and return the top headlines for the specified country
     # GET /api/news
     def index
-      country = params.fetch(:country, 'ar').to_s # Default to 'ar' if no country specified
+      country = news_params[:country] || 'ar'
 
-      begin
-        news = fetch_news country
-        render json: { news: }
-      rescue Faraday::Error => e
-        render json: { error: "Failed to fetch news: #{e.message}" }, status: :bad_gateway
-      rescue JSON::ParserError
-        render json: { error: 'Failed to parse news data' }, status: :bad_gateway
-      end
+      news = fetch_news country.to_s
+
+      render json: { news: }
     end
 
     private
+
+    # Strong parameter handling for news
+    def news_params
+      params.permit :country
+    end
 
     # Fetches the latest headlines for a given country
     # @param [String] country The country code
@@ -56,6 +59,16 @@ module Api
       @connection = Faraday.new(API_URL) do |faraday|
         faraday.headers['X-Api-Key'] = API_KEY
       end
+    end
+
+    # Handles Faraday errors and responds with a 502 Bad Gateway status
+    def handle_faraday_error(exception)
+      render json: { error: "Failed to fetch news: #{exception.message}" }, status: :bad_gateway
+    end
+
+    # Handles JSON parsing errors and responds with a 502 Bad Gateway status
+    def handle_json_error(_exception)
+      render json: { error: 'Failed to parse news data' }, status: :bad_gateway
     end
   end
 end
