@@ -1,0 +1,39 @@
+# .gitignore
+
+# -------------
+# Ruby on Rails
+# -------------
+
+# Ignore bundler config
+/.bundle
+
+# Ignore the default SQLite database
+/db/*.sqlite3
+/db/*.sqlite3-journal
+
+# Ignore all logfiles and tempfiles
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+
+# Ignore pidfiles
+/tmp/pids/*
+/tmp/cache/*
+/tmp/sockets/*
+
+# Ignore uploaded files in development
+/storage/*
+!/storage/.keep
+
+# Ignore master key for decrypting credentials and more
+/config/master.key
+
+# Ignore dotenv file
+.env
+
+# Ignore Byebug command history file.
+.byebug_history
+
+# Ignore vendor/bundle
+/vendor/bundle
