@@ -17,7 +17,9 @@ module Api
     #
     # POST /api/github_events
     def create
-      GithubEvent.create! github_event_params
+      event = GithubEvent.create! github_event_params
+
+      ActionCable.server.broadcast 'github_events', event
 
       render json: { message: 'Event successfully recorded' },
              status: :created

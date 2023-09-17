@@ -4,7 +4,7 @@ interface GitHubEvent {
         commits: Array<{
             message: string
         }> | undefined
-    }
+    } | undefined
 }
 
 interface GitHubEventsData {
