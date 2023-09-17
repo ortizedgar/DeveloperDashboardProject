@@ -8,7 +8,7 @@ module Api
   class GithubEventsController < ApplicationController
     WEBHOOK_SECRET = ENV['GITHUB_WEBHOOK_SECRET'].freeze
 
-    before_action :verify_github_webhook
+    before_action :verify_github_webhook, only: :create
 
     rescue_from StandardError, with: :handle_standard_error
     rescue_from ActiveRecord::RecordInvalid, with: :handle_record_invalid
@@ -21,6 +21,10 @@ module Api
 
       render json: { message: 'Event successfully recorded' },
              status: :created
+    end
+
+    def index
+      render json: { events: GithubEvent.all }
     end
 
     private
