@@ -17,18 +17,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_14_172205) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "repo_name"
-    t.integer "user_id"
-    t.index ["user_id"], name: "index_github_events_on_user_id"
   end
 
-  create_table "users", force: :cascade do |t|
-    t.string "email"
-    t.string "password_digest"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "github_token"
-    t.string "news_topic"
-  end
-
-  add_foreign_key "github_events", "users"
 end

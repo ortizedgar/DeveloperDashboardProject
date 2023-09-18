@@ -1,4 +1,5 @@
 class GithubEvent < ApplicationRecord
+  validates :event_type, presence: true
 end
 
 # == Schema Information
