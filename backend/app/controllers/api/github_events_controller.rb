@@ -9,35 +9,37 @@ module Api
     include ErrorHandler
 
     before_action :verify_signature, only: :create
-    before_action :prepare_event_params, only: :create
+    before_action :prepare_create_params, only: :create
 
     # Handles incoming GitHub event
     #
     # POST /api/github_events
     def create
-      GitHubEventService.call :create, @params
+      GitHub::EventService.call :create, @create_params
 
       render json: { message: 'Event successfully recorded' },
              status: :created
     end
 
     def index
-      render json: { events: GitHubEventService.call(:index) }
+      events = GitHub::EventService.call :index
+
+      render json: { events: }
     end
 
     private
 
     def verify_signature
-      return if GitHubSignatureValidator.call request
+      return if GitHub::SignatureValidator.call request
 
       render json: { error: 'Invalid GitHub webhook signature' },
              status: :forbidden
     end
 
-    def prepare_event_params
+    def prepare_create_params
       payload = JSON.parse(request.body.read || '').tap { request.body.rewind }
 
-      @params = {
+      @create_params = {
         event_type: request.headers['X-GitHub-Event'],
         repo_name: payload.dig('repository', 'name'),
         payload:
