@@ -26,7 +26,7 @@ module GitHub
     def create
       event = GithubEvent.create! @params
 
-      ActionCable.server.broadcast 'github_events', event
+      GitHub::BroadcastEventJob.perform_later event
     end
   end
 end
