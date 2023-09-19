@@ -9,21 +9,20 @@ module Api
     include ErrorHandler
 
     before_action :verify_signature, only: :create
+    before_action :prepare_event_params, only: :create
 
     # Handles incoming GitHub event
     #
     # POST /api/github_events
     def create
-      event = GithubEvent.create! event_params
-
-      ActionCable.server.broadcast 'github_events', event
+      GitHubEventService.call :create, @params
 
       render json: { message: 'Event successfully recorded' },
              status: :created
     end
 
     def index
-      render json: { events: GithubEvent.all }
+      render json: { events: GitHubEventService.call(:index) }
     end
 
     private
@@ -35,10 +34,10 @@ module Api
              status: :forbidden
     end
 
-    def event_params
+    def prepare_event_params
       payload = JSON.parse(request.body.read || '').tap { request.body.rewind }
 
-      {
+      @params = {
         event_type: request.headers['X-GitHub-Event'],
         repo_name: payload.dig('repository', 'name'),
         payload:
