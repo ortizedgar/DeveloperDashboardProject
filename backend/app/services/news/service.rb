@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 module News
+  # Service class to handle interactions with News API.
+  #
+  # This class serves as a wrapper for performing actions like fetching top headlines
+  # from the News API. It's designed to work with different actions and parameters.
   class Service
     HEADLINES_API = 'top-headlines'
     API_URL       = ENV.fetch 'NEWS_API_URL'
@@ -26,14 +30,11 @@ module News
     private
 
     def index
-      country = @params[:country] || 'ar'
+      country = @params&.fetch :country, 'ar'
 
       fetch_news country.to_s
     end
 
-    # Fetches the latest headlines for a given country
-    # @param [String] country The country code
-    # @return [Array<Hash>] An array of news articles
     def fetch_news(country)
       response = @connection.get do |request|
         request.url HEADLINES_API
@@ -45,7 +46,6 @@ module News
       JSON.parse response.body
     end
 
-    # Sets up the Faraday HTTP client with the necessary configurations
     def set_up_client
       @connection = Faraday.new(API_URL) do |faraday|
         faraday.headers['X-Api-Key'] = API_KEY

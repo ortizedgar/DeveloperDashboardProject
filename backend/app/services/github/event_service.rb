@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-module GitHub
+module Github
+  # Serves as a centralized service object for handling
+  # different actions related to Github Events.
   class EventService
     def self.call(action, params = nil)
       new(action, params).call
@@ -26,7 +28,7 @@ module GitHub
     def create
       event = GithubEvent.create! @params
 
-      GitHub::BroadcastEventJob.perform_later event
+      Github::BroadcastEventJob.perform_later event
     end
   end
 end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# Verifies the GitHub webhook signature
-module GitHub
+module Github
+  # Verifies the GitHub webhook signature
   class SignatureValidator
     WEBHOOK_SECRET = ENV['GITHUB_WEBHOOK_SECRET'].freeze
 

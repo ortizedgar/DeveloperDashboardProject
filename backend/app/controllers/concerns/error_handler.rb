@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# Provides a set of methods to handle exceptions gracefully
+# by rendering appropriate JSON responses with error messages.
 module ErrorHandler
   extend ActiveSupport::Concern
 
@@ -22,13 +24,11 @@ module ErrorHandler
                  :internal_server_error
   end
 
-  # Handles Faraday errors and responds with a 502 Bad Gateway status
   def handle_faraday_error(exception)
     render_error "Failed to fetch news: #{exception.message}",
                  :bad_gateway
   end
 
-  # Handles JSON parsing errors and responds with a 502 Bad Gateway status
   def handle_json_error(_exception)
     render_error 'Failed to parse news data',
                  :bad_gateway
