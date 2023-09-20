@@ -47,6 +47,7 @@ RSpec.describe Api::NewsController, type: :controller do
 
       it 'returns HTTP status 502' do
         get :index
+
         expect(response).to have_http_status 502
       end
     end

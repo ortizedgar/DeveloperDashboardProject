@@ -15,7 +15,7 @@ RSpec.describe Api::GithubEventsController, type: :controller do
 
     before do
       allow(controller)
-        .to receive :verify_github_webhook
+        .to receive :verify_signature
 
       request.headers.merge! headers
     end
